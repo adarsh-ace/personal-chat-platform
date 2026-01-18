@@ -1,0 +1,11 @@
+Personal real-time chat platform built with Spring Boot, SQL, JWT, and WebSockets.
+
+Completed:
+- Phase 1: Core foundation
+- Phase 2: Authentication & JWT security
+
+Upcoming:
+- User profiles
+- Private chat system
+- Media sharing
+- Real-time features
