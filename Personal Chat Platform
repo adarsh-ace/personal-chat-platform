@@ -1,0 +1,18 @@
+## Real-Time Chat Platform
+
+A real-time chat application built using Java, Spring Boot, SQL, and WebSockets.
+
+Status: Authentication completed. User profile system in progress.
+
+Next: User profiles and private chat module.
+
+
+Completed:
+- Phase 1: Core foundation
+- Phase 2: Authentication & JWT security
+
+Upcoming:
+- User profiles
+- Private chat system
+- Media sharing
+- Real-time features
