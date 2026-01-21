@@ -56,6 +56,32 @@ public class AuthController {
 
         String token = JwtUtil.generateToken(user.getEmail());
         return ResponseEntity.ok(token);
+    }
 
+    // ✅ LOGOUT
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout() {
+        return ResponseEntity.ok("Logged out successfully. Delete token on client side.");
+    }
+
+    // ✅ DELETE ACCOUNT (JWT required)
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteAccount(
+            @RequestHeader("Authorization") String authHeader) {
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(401)
+                    .body("Missing or invalid Authorization header");
+        }
+
+        String token = authHeader.substring(7);
+        String email = JwtUtil.extractEmail(token);
+
+        return userRepository.findByEmail(email)
+                .map(user -> {
+                    userRepository.delete(user);
+                    return ResponseEntity.ok("Account deleted successfully");
+                })
+                .orElse(ResponseEntity.badRequest().body("User not found"));
     }
 }
