@@ -54,15 +54,38 @@ public class AuthController {
             return ResponseEntity.badRequest().body("Wrong password");
         }
 
+        // ✅ MARK USER ONLINE + UPDATE LAST SEEN
+        user.setOnline(true);
+        user.setLastSeen(java.time.LocalDateTime.now());
+        userRepository.save(user);
+
         String token = JwtUtil.generateToken(user.getEmail());
         return ResponseEntity.ok(token);
     }
 
+
     // ✅ LOGOUT
+    // ✅ LOGOUT (marks user offline)
     @PostMapping("/logout")
-    public ResponseEntity<?> logout() {
-        return ResponseEntity.ok("Logged out successfully. Delete token on client side.");
+    public ResponseEntity<?> logout(@RequestHeader("Authorization") String authHeader) {
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(401).body("Missing token");
+        }
+
+        String token = authHeader.substring(7);
+        String email = JwtUtil.extractEmail(token);
+
+        return userRepository.findByEmail(email)
+                .map(user -> {
+                    user.setOnline(false);
+                    user.setLastSeen(java.time.LocalDateTime.now());
+                    userRepository.save(user);
+                    return ResponseEntity.ok("Logged out successfully");
+                })
+                .orElse(ResponseEntity.badRequest().body("User not found"));
     }
+
 
     // ✅ DELETE ACCOUNT (JWT required)
     @DeleteMapping("/delete")
